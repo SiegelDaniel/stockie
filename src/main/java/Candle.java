@@ -91,7 +91,9 @@ public class Candle {
 
     @Override
     public boolean equals(Object obj){
-        //TODO
+        if (this == obj){
+            return true;
+        }
         return false;
     }
 }
