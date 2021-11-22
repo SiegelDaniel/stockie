@@ -7,5 +7,6 @@ public class Stockie {
 
     public static void main(String[] args){
         System.out.println("test");
+        Candle mycandle = new Candle();
     }
 }
