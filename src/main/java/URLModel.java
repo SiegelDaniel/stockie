@@ -1,7 +1,7 @@
 public class URLModel {
 
 
-public String getUrl() {
+protected String getUrl() {
 
         String key = "1A79MCHMT69G16RE";
         String asset = "AAPL";

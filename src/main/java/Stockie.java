@@ -18,6 +18,7 @@ public class Stockie {
         Candle mycandle = new Candle();
         DatabaseConnector db = new DatabaseConnector();
         API api = new API();
-        api.getWebPage(url.getUrl());
+        String alphaVantageUrl = url.getUrl();
+        api.getWebPage(alphaVantageUrl);
     }
 }
