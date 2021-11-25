@@ -7,7 +7,7 @@ protected String getUrl() {
         String asset = "AAPL";
         String intervall = "1min";
         String function = "TIME_SERIES_INTRADAY";
-        String url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol="+asset+"&interval="+ intervall+"&apikey="+key;
+        String url = "https://www.alphavantage.co/query?function="+function+"&symbol="+asset+"&interval="+ intervall+"&apikey="+key;
     return url;
 
 
