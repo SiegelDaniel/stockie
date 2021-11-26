@@ -10,12 +10,11 @@ public class URLModel {
 
     }
 
-    public URLModel (String key, String asset, String interval, String function, String url){
+    public URLModel (String key, String asset, String interval, String function){
         this.key = key;
         this.asset = asset;
         this.interval = interval;
         this.function = function;
-        this.url = url;
     }
 
 

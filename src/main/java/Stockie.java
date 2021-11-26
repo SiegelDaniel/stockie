@@ -19,12 +19,8 @@ public class Stockie {
         DatabaseConnector db = new DatabaseConnector();
 
         // TEST ABFRAGE!
-        URLModel url = new URLModel();
+        URLModel url = new URLModel("1A79MCHMT69G16RE","AAPL","5min","TIME_SERIES_INTRADAY");
         API api = new API();
-        url.setKey("1A79MCHMT69G16RE");
-        url.setAsset("AAPL");
-        url.setInterval("5min");
-        url.setFunction("TIME_SERIES_INTRADAY");
         String alphaVantageUrl = url.getUrl();
         api.getWebPage(alphaVantageUrl);
     }
