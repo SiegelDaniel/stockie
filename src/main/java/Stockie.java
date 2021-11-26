@@ -12,12 +12,19 @@ public class Stockie {
 
     public static void main(String[] args) throws IOException {
 
-    URLModel url = new URLModel();
+
 
         System.out.println("test");
         Candle mycandle = new Candle();
         DatabaseConnector db = new DatabaseConnector();
+
+        // TEST ABFRAGE!
+        URLModel url = new URLModel();
         API api = new API();
+        url.setKey("1A79MCHMT69G16RE");
+        url.setAsset("AAPL");
+        url.setInterval("5min");
+        url.setFunction("TIME_SERIES_INTRADAY");
         String alphaVantageUrl = url.getUrl();
         api.getWebPage(alphaVantageUrl);
     }
