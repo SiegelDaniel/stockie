@@ -1,6 +1,8 @@
+import static spark.Spark.*;
+
 public class Stockie {
     /*
-    * Entry-Point und Main der gesamten Applikation.
+    * Entry-Point und Main der Application.
     * */
 
     public Stockie(){}
@@ -9,6 +11,7 @@ public class Stockie {
         System.out.println("test");
         Candle mycandle = new Candle();
         DatabaseConnector db = new DatabaseConnector();
+        get("/hello", (req,res)->"Hello World");
 
     }
 }
