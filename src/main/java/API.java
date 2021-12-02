@@ -1,4 +1,7 @@
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.http.GenericUrl;
@@ -7,17 +10,15 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.javanet.NetHttpTransport;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+
 import org.json.*;
 
 
 public class API {
-
-    ArrayList<String> open = new ArrayList<String>();
-    ArrayList<String> high = new ArrayList<String>();
-    ArrayList<String> low = new ArrayList<String>();
-    ArrayList<String> close = new ArrayList<String>();
-    ArrayList<String> volume = new ArrayList<String>();
 
     public String getWebPage(String url) throws IOException, IOException {
         HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
@@ -28,9 +29,10 @@ public class API {
         return response;
     }
 
-    public ArrayList<String> getJson(String response, String value) {
+    public ArrayList<Map<String, String>> getJson(String response) {
 
-        ArrayList<String> values = new ArrayList<String>();
+        Map<String, String> values = new HashMap<String, String>();
+        ArrayList<Map<String, String>> data = new ArrayList<Map<String, String>>();
 
         try {
             JSONObject obj = new JSONObject(response);
@@ -41,55 +43,23 @@ public class API {
 
             Iterator<?> keys = objtwo.keys();
 
-
-
             while (keys.hasNext()) {
                 String key = (String) keys.next();
-                System.out.println(objtwo.getJSONObject(key).getString("3. low"));
-                values.add(objtwo.getJSONObject(key).getString(value));
-                 System.out.println("\n");
+                values.put("date", key);
+                values.put("open", objtwo.getJSONObject(key).getString("1. open"));
+                values.put("high", objtwo.getJSONObject(key).getString("2. high"));
+                values.put("low", objtwo.getJSONObject(key).getString("3. low"));
+                values.put("close", objtwo.getJSONObject(key).getString("4. close"));
+                values.put("volume", objtwo.getJSONObject(key).getString("5. volume"));
+                data.add(values);
+                values = new HashMap<String, String>();
             }
 
-
-
         } catch (Exception e) {
-            //TODO: handle exception
             System.out.println(e);
         }
 
-       // System.out.println(values.toString());
-
-        return values;
-    }
-
-    public void setAllArrayLists(String response){
-
-        this.open = getJson(response, "1. open");
-        this.high = getJson(response, "2. high");
-        this.low = getJson(response, "3. low");
-        this.close = getJson(response, "4. close");
-        this.volume = getJson(response, "5. volume");
-
-    }
-
-    public ArrayList<String> getOpen() {
-        return this.open;
-    }
-
-    public ArrayList<String> getHigh() {
-        return this.high;
-    }
-
-    public ArrayList<String> getLow() {
-        return this.low;
-    }
-
-    public ArrayList<String> getClose() {
-        return this.close;
-    }
-
-    public ArrayList<String> getVolume() {
-        return this.volume;
+        return data;
     }
 
 }
