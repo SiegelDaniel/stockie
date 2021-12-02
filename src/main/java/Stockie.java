@@ -17,7 +17,6 @@ public class Stockie {
         System.out.println("test");
         //Candle mycandle = new Candle();
 
-
         // TEST ABFRAGE!
         URLModel url = new URLModel("1A79MCHMT69G16RE","AAPL","5min","TIME_SERIES_INTRADAY");
         API api = new API();
