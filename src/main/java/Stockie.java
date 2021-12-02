@@ -22,6 +22,8 @@ public class Stockie {
         URLModel url = new URLModel("1A79MCHMT69G16RE","AAPL","5min","TIME_SERIES_INTRADAY");
         API api = new API();
         String alphaVantageUrl = url.getUrl();
-        api.getWebPage(alphaVantageUrl);
+        api.getWebPage(alphaVantageUrl, "3. low");
+        api.getWebPage(alphaVantageUrl, "1. open");
+
     }
 }
