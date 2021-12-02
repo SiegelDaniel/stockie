@@ -23,6 +23,17 @@ public class Stockie {
         API api = new API();
         String alphaVantageUrl = url.getUrl();
         String response = api.getWebPage(alphaVantageUrl);
-        System.out.println(api.getJson(response));
+
+
+        api.setAllArrayLists(response);
+        //System.out.println(api.getOpen());
+        //System.out.println(api.getHigh());
+        System.out.println(api.getLow());
+        //System.out.println(api.getClose());
+        //System.out.println(api.getVolume());
+
+        //System.out.println(api.getJson(response, "3. low"));
+
+
     }
 }
