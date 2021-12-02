@@ -12,11 +12,11 @@ public class Stockie {
 
     public static void main(String[] args) throws IOException {
 
-
-
         System.out.println("test");
         Candle mycandle = new Candle();
         DatabaseConnector db = new DatabaseConnector();
+
+
 
         // TEST ABFRAGE!
         URLModel url = new URLModel("1A79MCHMT69G16RE","AAPL","5min","TIME_SERIES_INTRADAY");
