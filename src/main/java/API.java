@@ -12,20 +12,17 @@ import org.json.*;
 
 
 public class API {
-    String response;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-
-    public JsonNode getWebPage(String url, String value) throws IOException, IOException {
+    public String getWebPage(String url) throws IOException, IOException {
         HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
         HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(url));
         String response = request.execute().parseAsString();
 
         //System.out.println(response);
-        return objectMapper.readValue(response, JsonNode.class);
+        return response;
     }
 
-    public ArrayList test () {
+    public ArrayList<String> getJson(String response) {
 
         ArrayList<String> values = new ArrayList<String>();
 
