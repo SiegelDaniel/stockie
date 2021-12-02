@@ -48,35 +48,35 @@ public class Candle {
     /*GETTER & SETTER*/
 
     public double getClose() {
-        return close;
-    }
+            return close;
+        }
 
-    public double getOpen() {
-        return open;
-    }
+        public double getOpen() {
+            return open;
+        }
 
-    public double getHigh() {
-        return high;
-    }
+        public double getHigh() {
+            return high;
+        }
 
-    public double getLow() {
-        return low;
-    }
+        public double getLow() {
+            return low;
+        }
 
-    public GregorianCalendar getDate() {
-        return date;
-    }
+        public GregorianCalendar getDate() {
+            return date;
+        }
 
-    public void setOpen(double open) {
-        this.open = open;
-    }
+        public void setOpen(double open) {
+            this.open = open;
+        }
 
-    public void setClose(double close) {
-        this.close = close;
-    }
+        public void setClose(double close) {
+            this.close = close;
+        }
 
-    public void setHigh(double high) {
-        this.high = high;
+        public void setHigh(double high) {
+            this.high = high;
     }
 
     public void setLow(double low) {
