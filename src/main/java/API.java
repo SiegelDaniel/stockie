@@ -25,7 +25,7 @@ public class API {
         HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(url));
         String response = request.execute().parseAsString();
 
-        System.out.println(response);
+      // System.out.println(response);
         return response;
     }
 
