@@ -24,15 +24,9 @@ public class Stockie {
         String response = api.getWebPage(alphaVantageUrl);
         ArrayList<Map<String, String>> data = api.getJson(response);
         DatabaseConnector db = new DatabaseConnector(data);
-        //api.setAllArrayLists(response);
-        //System.out.println(api.getOpen());
-        //System.out.println(api.getHigh());
-        //System.out.println(api.getLow());
-        //System.out.println(api.getClose());
-        //System.out.println(api.getVolume());
 
-        //System.out.println(api.getJson(response, "3. low"));
-
+     //   db.uploadData(data);
+            db.viewData();
 
     }
 }
