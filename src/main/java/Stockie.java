@@ -27,7 +27,7 @@ public class Stockie {
         DatabaseConnector db = new DatabaseConnector();
         db.viewData();
 
-        /* DIE UPLOAD METHODE ERSTMAL NICHT AUSFÜHREN !
+        /** DIE UPLOAD METHODE ERSTMAL NICHT AUSFÜHREN !
                 MUSS NOCH ANGEPASST WERDEN
            DATEN IN DER DB WÜRDEN SONST DOPPELT VORHANDEN SEIN.
         */

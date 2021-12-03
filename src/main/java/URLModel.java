@@ -6,6 +6,13 @@ public class URLModel {
     protected String function;
     protected String url;
 
+
+    /**
+
+    Class with getter and setter for the ALPHAVANTAGE URL
+
+     */
+
     public URLModel (){
 
     }
