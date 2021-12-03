@@ -1,7 +1,6 @@
 import com.mysql.cj.xdevapi.Statement;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -23,10 +22,17 @@ public class Stockie {
         String alphaVantageUrl = url.getUrl();
         String response = api.getWebPage(alphaVantageUrl);
         ArrayList<Map<String, String>> data = api.getJson(response);
-        DatabaseConnector db = new DatabaseConnector(data);
 
-     //   db.uploadData(data);
-            db.viewData();
+        // DB Conector SELECT ABFRAGE UND UPLOAD API CALL
+        DatabaseConnector db = new DatabaseConnector();
+        db.viewData();
+
+        /* DIE UPLOAD METHODE ERSTMAL NICHT AUSFÜHREN !
+                MUSS NOCH ANGEPASST WERDEN
+           DATEN IN DER DB WÜRDEN SONST DOPPELT VORHANDEN SEIN.
+        */
+        //db.uploadData(data);
+
 
     }
 }
