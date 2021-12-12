@@ -1,4 +1,4 @@
-import java.util.GregorianCalendar;
+import java.sql.Timestamp;
 
 public class Candle {
 
@@ -9,7 +9,7 @@ public class Candle {
     protected double low;
     protected double high;
 
-    protected GregorianCalendar date;
+    protected Timestamp date;
 
     /*Standard constructor*/
     public Candle(){
@@ -19,7 +19,7 @@ public class Candle {
     /**
      * Parametrized constructor
      */
-    public Candle(double open, double close, double low, double high, GregorianCalendar time){
+    public Candle(double open, double close, double low, double high, Timestamp time){
         this.open = open;
         this.close = close;
         this.low = low;
@@ -63,7 +63,7 @@ public class Candle {
         return low;
     }
 
-    public GregorianCalendar getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
@@ -83,7 +83,7 @@ public class Candle {
         this.low = low;
     }
 
-    public void setDate(GregorianCalendar date) {
+    public void setDate(Timestamp date) {
         this.date = date;
     }
 
