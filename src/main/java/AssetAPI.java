@@ -87,11 +87,13 @@ public class AssetAPI {
     public String getPriceByDays(Request req, Response res){
         PreparedStatement ps = null;
         String timeframe = req.params(":days"); //wieviele Tage wollen wir
+        timeframe = Integer.toString(Integer.parseInt(timeframe)*24);
         String symbol = req.params(":asset-id"); //von welcher Aktie wollen wir die
         ResultSet rs = null;
         try{
-            ps = DBConnection.prepareStatement("SELECT Price_date,open,high,low,close FROM assetPrices INNER JOIN assets ON assetPrices.Asset_id = assets.Asset_id WHERE assets.symbol LIKE ? ORDER BY assetPrices.Price_date ");
+            ps = DBConnection.prepareStatement("SELECT Price_date,open,high,low,close FROM assetPrices INNER JOIN assets ON assetPrices.Asset_id = assets.Asset_id WHERE assets.symbol LIKE ? AND assetPrices.Price_date  >= DATE(NOW()) - INTERVAL ? HOUR ORDER BY assetPrices.Price_date ");
             ps.setString(1, symbol);
+            ps.setString(2, timeframe);
             rs = ps.executeQuery();
         } catch (SQLException queryNotExecutable) {
             //prepareStatement laeuft immer durch, Fehler koennen nur in executeQuery auftreten
