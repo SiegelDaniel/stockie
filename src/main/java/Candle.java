@@ -2,93 +2,87 @@ import java.sql.Timestamp;
 
 public class Candle {
 
-    public enum UNIT {SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, YEAR}
+  protected double open;
+  protected double high;
+  protected double low;
+  protected double close;
+  protected double volume;
 
-    protected double open;
-    protected double close;
-    protected double low;
-    protected double high;
+  protected long date; /*UNIX time*/
 
-    protected Timestamp date;
-
-    /*Standard constructor*/
-    public Candle(){
-
-    }
+  /*Standard constructor*/
+  public Candle() {}
 
   /** Parametrized constructor */
   public Candle(double open, double close, double low, double high, Timestamp time) {
-        this.open = open;
-        this.close = close;
-        this.low = low;
-        this.high = high;
-        this.date = time;
+    this.open = open;
+    this.high = high;
+    this.low = low;
+    this.close = close;
+    this.volume = 420.00; /*dummy*/
+
+    this.date = time.getTime();
+  }
+
+  /**
+   * Updates the Candle with an additional price. If open is not set yet, the price is set as open.
+   * The price is always set as close as it may be the last one. High and low are updated
+   * accordingly.
+   */
+  public void update(double price) {
+    this.close = price;
+    if (this.open == 0.0) {
+      this.open = price;
     }
+    if (this.high < price) {
+      this.high = price;
+    } else if (this.low > price) this.low = price;
+  }
 
-    /**
-     * Updates the Candle with an additional price.
-     * If open is not set yet, the price is set as open.
-     * The price is always set as close as it may be the last one.
-     * High and low are updated accordingly.
-     */
-    public void update(double price){
-        this.close = price;
-        if(this.open == 0.0){
-            this.open = price;
-        }
-        if(this.high < price){
-            this.high = price;
-        }else if(this.low > price) this.low = price;
-    }
+  /*GETTER & SETTER*/
 
+  public double getClose() {
+    return close;
+  }
 
+  public double getOpen() {
+    return open;
+  }
 
-    /*GETTER & SETTER*/
+  public double getHigh() {
+    return high;
+  }
 
-    public double getClose() {
-        return close;
-    }
+  public double getLow() {
+    return low;
+  }
 
-    public double getOpen() {
-        return open;
-    }
+  public long getDate() {
+    return date;
+  }
 
-    public double getHigh() {
-        return high;
-    }
+  public void setOpen(double open) {
+    this.open = open;
+  }
 
-    public double getLow() {
-        return low;
-    }
+  public void setClose(double close) {
+    this.close = close;
+  }
 
-    public Timestamp getDate() {
-        return date;
-    }
+  public void setHigh(double high) {
+    this.high = high;
+  }
 
-    public void setOpen(double open) {
-        this.open = open;
-    }
+  public void setLow(double low) {
+    this.low = low;
+  }
 
-    public void setClose(double close) {
-        this.close = close;
-    }
+  public void setDate(Timestamp date) {
+    this.date = date.getTime();
+  }
 
-    public void setHigh(double high) {
-        this.high = high;
-    }
-
-    public void setLow(double low) {
-        this.low = low;
-    }
-
-    public void setDate(Timestamp date) {
-        this.date = date;
-    }
-
-
-
-    @Override
-    public boolean equals(Object obj){
-        return this == obj;
-    }
+  @Override
+  public boolean equals(Object obj) {
+    return this == obj;
+  }
 }
