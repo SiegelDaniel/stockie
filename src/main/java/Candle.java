@@ -16,10 +16,8 @@ public class Candle {
 
     }
 
-    /**
-     * Parametrized constructor
-     */
-    public Candle(double open, double close, double low, double high, Timestamp time){
+  /** Parametrized constructor */
+  public Candle(double open, double close, double low, double high, Timestamp time) {
         this.open = open;
         this.close = close;
         this.low = low;
@@ -91,9 +89,6 @@ public class Candle {
 
     @Override
     public boolean equals(Object obj){
-        if (this == obj){
-            return true;
-        }
-        return false;
+        return this == obj;
     }
 }
