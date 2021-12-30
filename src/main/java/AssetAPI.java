@@ -11,20 +11,22 @@ import static spark.Spark.get;
 
 public class AssetAPI {
 
-  private Connection DBConnection;
+  private final Connection DBConnection;
+  private final Gson gson ;
   private ArrayList<Candle> Candles = new ArrayList<>();
-  private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-  public AssetAPI(Connection DBConnection) {
+
+  public AssetAPI(Connection DBConnection, Gson pGson) {
     this.DBConnection = DBConnection;
+    this.gson = pGson;
   }
   ;
 
   public void init() {
-    get("/assets/:asset-id/descr", ((request, response) -> getDescription(request, response)));
-    get(
-        "/assets/:asset-id/price/days/:days",
-        ((request, response) -> getPriceByDays(request, response)));
+    get("/assets/:asset-id/descr", (this::getDescription));
+    get("/assets/:asset-id/price/days/:days", (this::getPriceByDays));
+    get("/assets/:asset-id/price/all", (this::getAllPrices));
+    get("/assets/:asset-id/price/last", (this::getLastPrice));
   }
   ;
 
@@ -43,21 +45,33 @@ public class AssetAPI {
     try {
       ps =
           DBConnection.prepareStatement(
-              "SELECT Description FROM assetInformation JOIN assets ON assetInformation.Asset_id = assets.Asset_ID WHERE assets.Symbol=?;");
+              "SELECT Name,Description,Country,Sector,Industry,Currency,Logo,Website FROM assetInformation JOIN assets ON assetInformation.Asset_id = assets.Asset_ID WHERE assets.Symbol=?;");
       try {
         // Asset-Symbol (z.B. AAPL) aus der URL parsen
         ps.setString(1, req.params(":asset-id"));
         ResultSet rs = ps.executeQuery();
         try {
           if (rs.next()) { // pruefe ob RS leer ist oder nicht
+            String name = rs.getString("Name");
             String description = rs.getString("Description");
+            String sector = rs.getString("Sector");
+            String country = rs.getString("Country");
+            String industry = rs.getString("Industry");
+            String currency = rs.getString("Currency");
+            Blob logo = rs.getBlob("Logo");
+            String website = rs.getString("Website");
+
             rs.close();
             ps.close();
-            /* Alle Query-Instanzen ordnungsgemaess schliessen und zurueckgeben */
+
+            Information temporary = new Information(name,description,country,sector,industry,currency,website,logo);
+
+
             res.type("application/json");
-            /*muss vorher noch in JSON verpackt werden*/
-            description = gson.toJson(description);
+            description = gson.toJson(temporary);
+
             return description;
+
           } else {
             // Symbol wurde nicht gefunden, ResultSet war leer
             res.status(404);
@@ -90,8 +104,8 @@ public class AssetAPI {
    *     Java.
    * @return JSON Objekt
    */
-  // TODO: Aktuell werden alle Tage ausgegeben, wir wollen nur die letzten X Tage
   public String getPriceByDays(Request req, Response res) {
+    /*TODO: ggf. Plausibilitaetspruefung, ob Datenpunkte fehlen*/
     PreparedStatement ps = null;
     String timeframe = req.params(":days"); // wieviele Tage wollen wir
     timeframe = Integer.toString(Integer.parseInt(timeframe) * 24);
@@ -119,6 +133,7 @@ public class AssetAPI {
         double low = rs.getDouble("low");
         double close = rs.getDouble("close");
 
+
         Candle temp = new Candle(open, close, low, high, pricedate);
         Candles.add(temp);
       }
@@ -132,6 +147,82 @@ public class AssetAPI {
     res.type("application/json");
     String ret = gson.toJson(Candles);
     Candles.clear();
+    return ret;
+  }
+
+
+  public String getAllPrices(Request req, Response res){
+    String symbol = req.params(":asset-id");
+    ResultSet rs = null;
+    PreparedStatement ps = null;
+    try {
+      ps =
+              DBConnection.prepareStatement(
+                      "SELECT Price_date,open,high,low,close FROM assetHistoryPrices INNER JOIN assets ON assetHistoryPrices.Asset_id = assets.Asset_id WHERE assets.symbol LIKE ?  ORDER BY assetHistoryPrices.Price_date ");
+      ps.setString(1, symbol);
+      rs = ps.executeQuery();
+    } catch (SQLException queryNotExecutable) {
+      queryNotExecutable.printStackTrace();
+      res.status(500);
+      return "Error retrieving dataset";
+    }
+
+    try {
+      while (rs.next()) {
+        Timestamp pricedate = rs.getTimestamp("Price_date");
+        double open = rs.getDouble("open");
+        double high = rs.getDouble("high");
+        double low = rs.getDouble("low");
+        double close = rs.getDouble("close");
+
+        Candle temp = new Candle(open, close, low, high, pricedate);
+        Candles.add(temp);
+      }
+    } catch (SQLException resultSetEmpty) {
+      resultSetEmpty.printStackTrace();
+      res.status(500);
+      return "No entries for asset";
+    }
+
+    res.type("application/json");
+    String ret = gson.toJson(Candles);
+    Candles.clear();
+    return ret;
+
+  }
+
+  public String getLastPrice(Request req, Response res){
+    String symbol = req.params(":asset-id");
+    ResultSet rs = null;
+    PreparedStatement ps = null;
+    double close = 0;
+    try {
+      ps =
+              DBConnection.prepareStatement(
+                      "SELECT Price_date,open,high,low,close FROM assetPrices INNER JOIN assets ON assetPrices.Asset_id = assets.Asset_id WHERE assets.symbol LIKE ?  ORDER BY assetPrices.Price_date LIMIT 1 ");
+      ps.setString(1, symbol);
+      rs = ps.executeQuery();
+    } catch (SQLException queryNotExecutable) {
+      queryNotExecutable.printStackTrace();
+      res.status(500);
+      return "Error retrieving dataset";
+    }
+
+    try {
+      while (rs.next()) {
+        close = rs.getDouble("close");
+
+
+      }
+    } catch (SQLException resultSetEmpty) {
+      resultSetEmpty.printStackTrace();
+      res.status(500);
+      return "No entries for asset";
+    }
+
+    res.type("application/json");
+    String ret = gson.toJson(close);
+
     return ret;
   }
 }

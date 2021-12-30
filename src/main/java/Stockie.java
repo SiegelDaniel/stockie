@@ -1,3 +1,6 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -11,8 +14,6 @@ public class Stockie {
 
 
   public Stockie() {
-
-
 
   }
 
@@ -31,7 +32,13 @@ public class Stockie {
       System.exit(0);
     }
 
-    AssetAPI assetAPI = new AssetAPI(dbc);
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+    AssetAPI assetAPI = new AssetAPI(dbc, gson);
+    assetAPI.init();
+
+    IndicatorAPI indicatorAPI  = new IndicatorAPI(dbc, gson);
+    indicatorAPI.init();
 
     Stockie app;
     app = new Stockie();

@@ -22,6 +22,7 @@ public class Candle {
     this.volume = 420.00; /*dummy*/
 
     this.date = time.getTime();
+
   }
 
   /**
