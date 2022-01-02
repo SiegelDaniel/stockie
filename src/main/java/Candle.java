@@ -14,12 +14,12 @@ public class Candle {
   public Candle() {}
 
   /** Parametrized constructor */
-  public Candle(double open, double close, double low, double high, Timestamp time) {
+  public Candle(double open, double close, double low, double high, double volume, Timestamp time) {
     this.open = open;
     this.high = high;
     this.low = low;
     this.close = close;
-    this.volume = 420.00; /*dummy*/
+    this.volume = volume;
 
     this.date = time.getTime();
 
@@ -62,6 +62,8 @@ public class Candle {
     return date;
   }
 
+  public double getVolume(){ return this.volume;}
+
   public void setOpen(double open) {
     this.open = open;
   }
@@ -81,6 +83,8 @@ public class Candle {
   public void setDate(Timestamp date) {
     this.date = date.getTime();
   }
+
+
 
   @Override
   public boolean equals(Object obj) {

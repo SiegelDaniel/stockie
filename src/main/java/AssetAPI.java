@@ -114,7 +114,7 @@ public class AssetAPI {
     try {
       ps =
           DBConnection.prepareStatement(
-              "SELECT Price_date,open,high,low,close FROM assetPrices INNER JOIN assets ON assetPrices.Asset_id = assets.Asset_id WHERE assets.symbol LIKE ? AND assetPrices.Price_date  >= DATE(NOW()) - INTERVAL ? HOUR ORDER BY assetPrices.Price_date ");
+              "SELECT Price_date,open,high,low,close,volume FROM assetPrices INNER JOIN assets ON assetPrices.Asset_id = assets.Asset_id WHERE assets.symbol LIKE ? AND assetPrices.Price_date  >= DATE(NOW()) - INTERVAL ? HOUR ORDER BY assetPrices.Price_date ");
       ps.setString(1, symbol);
       ps.setString(2, timeframe);
       rs = ps.executeQuery();
@@ -132,9 +132,10 @@ public class AssetAPI {
         double high = rs.getDouble("high");
         double low = rs.getDouble("low");
         double close = rs.getDouble("close");
+        double volume = rs.getDouble("volume");
 
 
-        Candle temp = new Candle(open, close, low, high, pricedate);
+        Candle temp = new Candle(open, close, low, high, volume, pricedate);
         Candles.add(temp);
       }
     } catch (SQLException resultSetEmpty) {
@@ -143,8 +144,9 @@ public class AssetAPI {
       res.status(500);
       return "No entries for asset";
     }
-
+    this.fillMissingCandles();
     res.type("application/json");
+
     String ret = gson.toJson(Candles);
     Candles.clear();
     return ret;
@@ -158,7 +160,7 @@ public class AssetAPI {
     try {
       ps =
               DBConnection.prepareStatement(
-                      "SELECT Price_date,open,high,low,close FROM assetHistoryPrices INNER JOIN assets ON assetHistoryPrices.Asset_id = assets.Asset_id WHERE assets.symbol LIKE ?  ORDER BY assetHistoryPrices.Price_date ");
+                      "SELECT Price_date,open,high,low,close,volume FROM assetHistoryPrices INNER JOIN assets ON assetHistoryPrices.Asset_id = assets.Asset_id WHERE assets.symbol LIKE ?  ORDER BY assetHistoryPrices.Price_date ");
       ps.setString(1, symbol);
       rs = ps.executeQuery();
     } catch (SQLException queryNotExecutable) {
@@ -174,8 +176,9 @@ public class AssetAPI {
         double high = rs.getDouble("high");
         double low = rs.getDouble("low");
         double close = rs.getDouble("close");
+        double volume = rs.getDouble("volume");
 
-        Candle temp = new Candle(open, close, low, high, pricedate);
+        Candle temp = new Candle(open, close, low, high, volume, pricedate);
         Candles.add(temp);
       }
     } catch (SQLException resultSetEmpty) {
@@ -224,5 +227,23 @@ public class AssetAPI {
     String ret = gson.toJson(close);
 
     return ret;
+  }
+
+  public void fillMissingCandles(){
+    int size = Candles.size();
+
+    for(int i  = 0; i < size-1; i++){
+      Candle last = Candles.get(i);
+      Candle toCompare = Candles.get(i+1);
+      long LastTimeStamp = last.getDate();
+      long TimeStampToCompare = toCompare.getDate();
+      long difference =  TimeStampToCompare - LastTimeStamp;
+      if(difference > 60000){
+        Candles.add(i+1, new Candle(last.getOpen(),last.getClose(),last.getLow(),last.getHigh(),last.getVolume(),new Timestamp(last.getDate()+60000)));
+      }
+      i++;
+      size = Candles.size();
+
+    }
   }
 }
