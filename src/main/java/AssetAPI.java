@@ -13,7 +13,7 @@ public class AssetAPI {
 
   private final Connection DBConnection;
   private final Gson gson ;
-  private ArrayList<Candle> Candles = new ArrayList<>();
+
 
 
   public AssetAPI(Connection DBConnection, Gson pGson) {
@@ -105,7 +105,7 @@ public class AssetAPI {
    * @return JSON Objekt
    */
   public String getPriceByDays(Request req, Response res) {
-    /*TODO: ggf. Plausibilitaetspruefung, ob Datenpunkte fehlen*/
+    ArrayList<Candle> Candles = new ArrayList<>();
     PreparedStatement ps = null;
     String timeframe = req.params(":days"); // wieviele Tage wollen wir
     timeframe = Integer.toString(Integer.parseInt(timeframe) * 24);
@@ -125,7 +125,11 @@ public class AssetAPI {
       return "Error retrieving dataset";
     }
 
-    try {
+    try{
+      if(!rs.next()){
+        res.status(404);
+        return "No entries for selection";
+      }
       while (rs.next()) {
         Timestamp pricedate = rs.getTimestamp("Price_date");
         double open = rs.getDouble("open");
@@ -133,7 +137,6 @@ public class AssetAPI {
         double low = rs.getDouble("low");
         double close = rs.getDouble("close");
         double volume = rs.getDouble("volume");
-
 
         Candle temp = new Candle(open, close, low, high, volume, pricedate);
         Candles.add(temp);
@@ -144,7 +147,7 @@ public class AssetAPI {
       res.status(500);
       return "No entries for asset";
     }
-    this.fillMissingCandles();
+    this.fillMissingCandles(Candles);
     res.type("application/json");
 
     String ret = gson.toJson(Candles);
@@ -154,6 +157,7 @@ public class AssetAPI {
 
 
   public String getAllPrices(Request req, Response res){
+    ArrayList<Candle> Candles = new ArrayList<>();
     String symbol = req.params(":asset-id");
     ResultSet rs = null;
     PreparedStatement ps = null;
@@ -187,6 +191,7 @@ public class AssetAPI {
       return "No entries for asset";
     }
 
+
     res.type("application/json");
     String ret = gson.toJson(Candles);
     Candles.clear();
@@ -195,6 +200,7 @@ public class AssetAPI {
   }
 
   public String getLastPrice(Request req, Response res){
+    ArrayList<Candle> Candles = new ArrayList<>();
     String symbol = req.params(":asset-id");
     ResultSet rs = null;
     PreparedStatement ps = null;
@@ -229,21 +235,25 @@ public class AssetAPI {
     return ret;
   }
 
-  public void fillMissingCandles(){
+  public void fillMissingCandles(ArrayList<Candle> Candles){
     int size = Candles.size();
+
 
     for(int i  = 0; i < size-1; i++){
       Candle last = Candles.get(i);
       Candle toCompare = Candles.get(i+1);
+
       long LastTimeStamp = last.getDate();
       long TimeStampToCompare = toCompare.getDate();
       long difference =  TimeStampToCompare - LastTimeStamp;
+
       if(difference > 60000){
         Candles.add(i+1, new Candle(last.getOpen(),last.getClose(),last.getLow(),last.getHigh(),last.getVolume(),new Timestamp(last.getDate()+60000)));
       }
-      i++;
       size = Candles.size();
 
     }
+
+
   }
 }

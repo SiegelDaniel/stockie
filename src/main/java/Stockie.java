@@ -26,7 +26,7 @@ public class Stockie {
             });
     Connection dbc = null;
     try{
-      dbc = DriverManager.getConnection("jdbc:mysql://185.188.250.67:3306/Se2Projekt", "root", "StefanWolf2k21");
+      dbc = DriverManager.getConnection("jdbc:mysql://185.188.250.67:3306/Se2Projekt", "root", "cPNMcZGcmi4Z4UTN");
     } catch (SQLException ConnectionNotEstablished) {
       ConnectionNotEstablished.printStackTrace();
       System.exit(0);
