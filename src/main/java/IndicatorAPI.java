@@ -26,7 +26,7 @@ public class IndicatorAPI {
     String symbol = request.params(":asset-id");
     String days = request.params(":days");
     ResultSet rs;
-    PreparedStatement ps = null;
+    PreparedStatement ps;
     int MAcounter = 0;
     double MAsum = 0;
     DataPoints = new ArrayList<>();
@@ -45,15 +45,16 @@ public class IndicatorAPI {
     }
 
     try {
+      if(!rs.next()){
+        response.status(404);
+        return "No result set";
+      }
       while (rs.next()) {
         Timestamp pricedate = rs.getTimestamp("Price_date");
         double high = rs.getDouble("high");
         double low = rs.getDouble("low");
         double value = high + low;
         value = value / 2;
-        System.out.println(value);
-        System.out.println(low);
-        System.out.println(high);
         MAsum += value;
         MAcounter += 1;
         Indicator_Point temp = new Indicator_Point(pricedate, MAsum / MAcounter);

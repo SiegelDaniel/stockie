@@ -22,5 +22,12 @@ dependencies {
 }
 
 test {
+    forkEvery = 1
+    maxParallelForks = 1
     useJUnitPlatform()
+    failFast = false
+    reports {
+        junitXml.enabled = false
+        html.enabled = true
+    }
 }

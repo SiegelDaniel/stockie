@@ -88,6 +88,7 @@ public class AssetAPI {
         throwables.printStackTrace();
       }
     } catch (SQLException e) {
+      res.status(500);
       e.printStackTrace();
     }
     return "NOT FOUND";
@@ -174,6 +175,10 @@ public class AssetAPI {
     }
 
     try {
+      if(!rs.next()){
+        res.status(404);
+        return "Asset not found";
+      }
       while (rs.next()) {
         Timestamp pricedate = rs.getTimestamp("Price_date");
         double open = rs.getDouble("open");
@@ -208,7 +213,7 @@ public class AssetAPI {
     try {
       ps =
               DBConnection.prepareStatement(
-                      "SELECT Price_date,open,high,low,close FROM assetPrices INNER JOIN assets ON assetPrices.Asset_id = assets.Asset_id WHERE assets.symbol LIKE ?  ORDER BY assetPrices.Price_date LIMIT 1 ");
+                      "SELECT Price_date,open,high,low,close FROM assetPrices INNER JOIN assets ON assetPrices.Asset_id = assets.Asset_id WHERE assets.symbol LIKE ?  ORDER BY assetPrices.Price_date DESC LIMIT 1 ");
       ps.setString(1, symbol);
       rs = ps.executeQuery();
     } catch (SQLException queryNotExecutable) {
@@ -220,15 +225,18 @@ public class AssetAPI {
     try {
       while (rs.next()) {
         close = rs.getDouble("close");
-
-
       }
     } catch (SQLException resultSetEmpty) {
       resultSetEmpty.printStackTrace();
       res.status(500);
       return "No entries for asset";
     }
-
+    System.out.println("This is close");
+    System.out.println(close);
+    if(close == 0.0){
+      res.status(404);
+      return "Not found";
+    }
     res.type("application/json");
     String ret = gson.toJson(close);
 
